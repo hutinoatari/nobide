@@ -1,4 +1,4 @@
-import { ensureDir } from "https://deno.land/std@0.139.0/fs/mod.ts";
+import { emptyDir } from "https://deno.land/std@0.139.0/fs/mod.ts";
 import { createCanvas } from "https://deno.land/x/canvas/mod.ts";
 import { Line, LineSegment, Plane, Triangle, Vector3 } from "./util.ts";
 
@@ -14,8 +14,9 @@ const camera = new Vector3(
     -canvas.width * 2,
 );
 
-await ensureDir(tmpDir);
-for (let i = 0; i < 180; i += 1) {
+await emptyDir(tmpDir);
+for (let i = 0; i < 360; i += 1) {
+    const imageData = context.createImageData(canvas.width, canvas.height);
     for (let x = 0; x < canvas.width; x += 1) {
         for (let y = 0; y < canvas.height; y += 1) {
             const ray = new LineSegment(
@@ -55,18 +56,21 @@ for (let i = 0; i < 180; i += 1) {
             const depths = panels.map((p) => p.collide(ray)).filter((e) =>
                 e !== null
             );
-            context.fillStyle = "white";
+            let color = 255;
             if (depths.length !== 0) {
                 const depth = Math.min(...depths.map((v) => v.z));
                 if (0 <= depth || depth <= canvas.width) {
-                    context.fillStyle = `rgb(${(depth / canvas.width) * 255}, ${
-                        (depth / canvas.width) * 255
-                    }, ${(depth / canvas.width) * 255})`;
+                    color = Math.round((depth / canvas.width) * 255);
                 }
             }
-            context.fillRect(x, y, 1, 1);
+            const idx = y * canvas.width + x;
+            imageData.data[4 * idx] = color;
+            imageData.data[4 * idx + 1] = color;
+            imageData.data[4 * idx + 2] = color;
+            imageData.data[4 * idx + 3] = 255;
         }
     }
+    context.putImageData(imageData, 0, 0);
     await Deno.writeFile(`${tmpDir}/img${i}.png`, canvas.toBuffer());
     console.log(`img${i}.png`);
 }
