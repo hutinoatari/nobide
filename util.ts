@@ -109,15 +109,10 @@ class Triangle extends Plane {
         const p12 = this.p2.add(this.p1.sm(-1));
         const p23 = this.p3.add(this.p2.sm(-1));
         const p31 = this.p1.add(this.p3.sm(-1));
-        const c1z = cp1.cp(p12).z;
-        const c2z = cp2.cp(p23).z;
-        const c3z = cp3.cp(p31).z;
-        if (
-            Array.from(new Set([c1z, c2z, c3z].map((e) => Math.sign(e))))
-                .length === 1
-        ) {
-            return c;
-        }
+        const c1zd = Math.sign(cp1.cp(p12).z);
+        const c2zd = Math.sign(cp2.cp(p23).z);
+        const c3zd = Math.sign(cp3.cp(p31).z);
+        if (c1zd === c2zd && c1zd === c3zd) return c;
         return null;
     }
 }
