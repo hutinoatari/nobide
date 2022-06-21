@@ -2,29 +2,36 @@ import { emptyDir } from "https://deno.land/std@0.139.0/fs/mod.ts";
 import { createCanvas } from "https://deno.land/x/canvas/mod.ts";
 import { Line, LineSegment, Plane, Triangle, Vector3 } from "./util.ts";
 
+const config = {
+    width: 320,
+    height: 240,
+    depth: 240,
+    framerate: 30,
+};
+
 const tmpDir = "./tmp";
-const canvas = createCanvas(320, 240);
+const canvas = createCanvas(config.width, config.height);
 const context = canvas.getContext("2d");
 
 const degToRad = (n) => Math.PI * n / 180;
 
 const camera = new Vector3(
-    canvas.width / 2,
-    canvas.height / 2,
-    -canvas.width * 2,
+    config.width / 2,
+    config.height / 2,
+    -config.depth * 2,
 );
 
 await emptyDir(tmpDir);
 for (let i = 0; i < 360; i += 1) {
     const imageData = context.createImageData(canvas.width, canvas.height);
-    for (let x = 0; x < canvas.width; x += 1) {
-        for (let y = 0; y < canvas.height; y += 1) {
+    for (let x = 0; x < config.width; x += 1) {
+        for (let y = 0; y < config.height; y += 1) {
             const ray = new LineSegment(
                 camera,
                 new Vector3(
                     camera.x + (x - camera.x) * 1.5,
                     camera.y + (y - camera.y) * 1.5,
-                    canvas.width,
+                    config.depth,
                 ),
             );
             const topp = new Vector3(
@@ -59,8 +66,8 @@ for (let i = 0; i < 360; i += 1) {
             let color = 255;
             if (depths.length !== 0) {
                 const depth = Math.min(...depths.map((v) => v.z));
-                if (0 <= depth || depth <= canvas.width) {
-                    color = Math.round((depth / canvas.width) * 255);
+                if (0 <= depth || depth <= config.depth) {
+                    color = Math.round((depth / config.depth) * 255);
                 }
             }
             const idx = y * canvas.width + x;
@@ -78,7 +85,7 @@ const p = Deno.run({
     cmd: [
         "ffmpeg",
         "-framerate",
-        "30",
+        config.framerate,
         "-i",
         `${tmpDir}/img%d.png`,
         "-vcodec",
