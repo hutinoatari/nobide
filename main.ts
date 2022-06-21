@@ -75,7 +75,17 @@ for (let i = 0; i < 360; i += 1) {
     console.log(`img${i}.png`);
 }
 const p = Deno.run({
-    cmd: ["ffmpeg", "-r", "30", "-i", `${tmpDir}/img%d.png`, "out.mp4"],
+    cmd: [
+        "ffmpeg",
+        "-framerate",
+        "30",
+        "-i",
+        `${tmpDir}/img%d.png`,
+        "-vcodec",
+        "libx264",
+        "-pix_fmt",
+        "yub420p",
+        "out.mp4",
+    ],
 });
-const status = await p.status();
-console.log(status);
+await p.status();

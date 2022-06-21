@@ -103,15 +103,15 @@ class Triangle extends Plane {
         const a = d1 / (d1 + d2);
         const v3 = v1.sm(1 - a).add(v2.sm(a));
         const c = this.p.add(v3);
-        const cp1 = c.add(this.p1.sm(-1));
-        const cp2 = c.add(this.p2.sm(-1));
-        const cp3 = c.add(this.p3.sm(-1));
-        const p12 = this.p2.add(this.p1.sm(-1));
-        const p23 = this.p3.add(this.p2.sm(-1));
-        const p31 = this.p1.add(this.p3.sm(-1));
-        const c1zd = Math.sign(cp1.cp(p12).z);
-        const c2zd = Math.sign(cp2.cp(p23).z);
-        const c3zd = Math.sign(cp3.cp(p31).z);
+        const vcp1 = c.add(this.p1.sm(-1));
+        const vcp2 = c.add(this.p2.sm(-1));
+        const vcp3 = c.add(this.p3.sm(-1));
+        const v12 = this.p2.add(this.p1.sm(-1));
+        const v23 = this.p3.add(this.p2.sm(-1));
+        const v31 = this.p1.add(this.p3.sm(-1));
+        const c1zd = Math.sign(vcp1.cp(v12).z);
+        const c2zd = Math.sign(vcp2.cp(v23).z);
+        const c3zd = Math.sign(vcp3.cp(v31).z);
         if (c1zd === c2zd && c1zd === c3zd) return c;
         return null;
     }
