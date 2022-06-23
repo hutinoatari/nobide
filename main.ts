@@ -1,6 +1,6 @@
 import { emptyDir } from "https://deno.land/std@0.139.0/fs/mod.ts";
 import { createCanvas } from "https://deno.land/x/canvas/mod.ts";
-import { Line, LineSegment, Plane, Triangle, Vector3 } from "./util.ts";
+import { LineSegment, Triangle, Vector3 } from "./util.ts";
 
 const config = {
     width: 320,
@@ -50,7 +50,13 @@ for (let i = 0; i < 120; i += 1) {
                 160,
             );
             const panels = [
-                new Triangle(topp, bottom1, bottom2).rotateZ(
+                new Triangle(topp, bottom1, bottom2).rotateX(
+                    new Vector3(160, 120, 160),
+                    degToRad(i * 3),
+                ).rotateY(
+                    new Vector3(160, 120, 160),
+                    degToRad(i * 3),
+                ).rotateZ(
                     new Vector3(160, 120, 160),
                     degToRad(i * 3),
                 ),

@@ -68,60 +68,38 @@ class Vector3 {
     }
 }
 
-class Line {
-    p: Vector3;
-    v: Vector3;
-    constructor(p1: Vector3, p2: Vector3) {
-        this.p = p1;
-        this.v = p2.add(p1.sm(-1)).normalize();
-    }
-    toString(): string {
-        return `P = ${this.p.toString()} + a * ${this.v.toString()}`;
-    }
-}
-
-class LineSegment extends Line {
+class LineSegment {
     p1: Vector3;
     p2: Vector3;
+    v: Vector3;
     constructor(p1: Vector3, p2: Vector3) {
-        super(p1, p2);
         this.p1 = p1;
         this.p2 = p2;
+        this.v = p2.add(p1.sm(-1)).normalize();
     }
 }
 
-class Plane {
-    p: Vector3;
+class Triangle {
+    p1: Vector3;
+    p2: Vector3;
+    p3: Vector3;
     n: Vector3;
     constructor(p1: Vector3, p2: Vector3, p3: Vector3) {
-        this.p = p1;
+        this.p1 = p1;
+        this.p2 = p2;
+        this.p3 = p3;
         const p1i = p1.sm(-1);
         const v12 = p2.add(p1i);
         const v13 = p3.add(p1i);
         this.n = v12.cp(v13).normalize();
     }
     distance(point: Vector3): number {
-        const v1 = point.add(this.p.sm(-1));
+        const v1 = point.add(this.p1.sm(-1));
         const d = Math.abs(this.n.dp(v1));
         return d;
     }
-    toString(): string {
-        return `(P - ${this.p.toString}) x ${this.n.toString()} = 0`;
-    }
-}
-
-class Triangle extends Plane {
-    p1: Vector3;
-    p2: Vector3;
-    p3: Vector3;
-    constructor(p1: Vector3, p2: Vector3, p3: Vector3) {
-        super(p1, p2, p3);
-        this.p1 = p1;
-        this.p2 = p2;
-        this.p3 = p3;
-    }
     collide(line: LineSegment): Vector3 | null {
-        const pi = this.p.sm(-1);
+        const pi = this.p1.sm(-1);
         const v1 = line.p1.add(pi);
         const v2 = line.p2.add(pi);
         if (v1.dp(this.n) * v2.dp(this.n) > 0) return null;
@@ -129,7 +107,7 @@ class Triangle extends Plane {
         const d2 = this.distance(line.p2);
         const a = d1 / (d1 + d2);
         const v3 = v1.sm(1 - a).add(v2.sm(a));
-        const c = this.p.add(v3);
+        const c = this.p1.add(v3);
         const vcp1 = c.add(this.p1.sm(-1));
         const vcp2 = c.add(this.p2.sm(-1));
         const vcp3 = c.add(this.p3.sm(-1));
@@ -163,6 +141,13 @@ class Triangle extends Plane {
             this.p3.rotateZ(from, rad),
         );
     }
+    translate(vec: Vector3) {
+        return new Triangle(
+            this.p1.add(vec),
+            this.p2.add(vec),
+            this.p3.add(vec),
+        );
+    }
 }
 
-export { Line, LineSegment, Plane, Triangle, Vector3 };
+export { LineSegment, Triangle, Vector3 };
