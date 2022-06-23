@@ -30,6 +30,33 @@ class Vector3 {
             this.x * vec.y - this.y * vec.x,
         );
     }
+    rotateX(from: Vector3, rad: number) {
+        const t = this.add(from.sm(-1));
+        const tr = new Vector3(
+            t.x,
+            t.y * Math.cos(rad) - t.z * Math.sin(rad),
+            t.y * Math.sin(rad) + t.z * Math.cos(rad),
+        ).add(from);
+        return tr;
+    }
+    rotateY(from: Vector3, rad: number) {
+        const t = this.add(from.sm(-1));
+        const tr = new Vector3(
+            t.x * Math.cos(rad) - t.z * Math.sin(rad),
+            t.y,
+            t.x * Math.sin(rad) + t.z * Math.cos(rad),
+        ).add(from);
+        return tr;
+    }
+    rotateZ(from: Vector3, rad: number) {
+        const t = this.add(from.sm(-1));
+        const tr = new Vector3(
+            t.x * Math.cos(rad) - t.y * Math.sin(rad),
+            t.x * Math.sin(rad) + t.y * Math.cos(rad),
+            t.z,
+        ).add(from);
+        return tr;
+    }
     size(): number {
         return (this.x ** 2 + this.y ** 2 + this.z ** 2) ** (1 / 2);
     }
@@ -114,6 +141,27 @@ class Triangle extends Plane {
         const c3zd = Math.sign(vcp3.cp(v31).z);
         if (c1zd === c2zd && c1zd === c3zd) return c;
         return null;
+    }
+    rotateX(from: Vector3, rad: number) {
+        return new Triangle(
+            this.p1.rotateX(from, rad),
+            this.p2.rotateX(from, rad),
+            this.p3.rotateX(from, rad),
+        );
+    }
+    rotateY(from: Vector3, rad: number) {
+        return new Triangle(
+            this.p1.rotateY(from, rad),
+            this.p2.rotateY(from, rad),
+            this.p3.rotateY(from, rad),
+        );
+    }
+    rotateZ(from: Vector3, rad: number) {
+        return new Triangle(
+            this.p1.rotateZ(from, rad),
+            this.p2.rotateZ(from, rad),
+            this.p3.rotateZ(from, rad),
+        );
     }
 }
 

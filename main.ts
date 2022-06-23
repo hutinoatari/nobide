@@ -22,7 +22,7 @@ const camera = new Vector3(
 );
 
 await emptyDir(tmpDir);
-for (let i = 0; i < 360; i += 1) {
+for (let i = 0; i < 120; i += 1) {
     const imageData = context.createImageData(canvas.width, canvas.height);
     for (let x = 0; x < config.width; x += 1) {
         for (let y = 0; y < config.height; y += 1) {
@@ -36,29 +36,24 @@ for (let i = 0; i < 360; i += 1) {
             );
             const topp = new Vector3(
                 160,
-                60 - 135 * Math.sin(degToRad(i * 2)),
+                20,
                 160,
             );
             const bottom1 = new Vector3(
-                160 + 140 * Math.cos(degToRad(i * 2)),
-                180 - 135 * Math.sin(degToRad(i * 2)),
-                160 + 140 * Math.sin(degToRad(i * 2)),
+                20,
+                160,
+                160,
             );
             const bottom2 = new Vector3(
-                160 + 140 * Math.cos(degToRad(i * 2 + 120)),
-                180 - 135 * Math.sin(degToRad(i * 2)),
-                160 + 140 * Math.sin(degToRad(i * 2 + 120)),
-            );
-            const bottom3 = new Vector3(
-                160 + 140 * Math.cos(degToRad(i * 2 + 240)),
-                180 - 135 * Math.sin(degToRad(i * 2)),
-                160 + 140 * Math.sin(degToRad(i * 2 + 240)),
+                300,
+                160,
+                160,
             );
             const panels = [
-                new Triangle(topp, bottom1, bottom2),
-                new Triangle(topp, bottom2, bottom3),
-                new Triangle(topp, bottom3, bottom1),
-                new Triangle(bottom1, bottom2, bottom1),
+                new Triangle(topp, bottom1, bottom2).rotateZ(
+                    new Vector3(160, 120, 160),
+                    degToRad(i * 3),
+                ),
             ];
             const depths = panels.map((p) => p.collide(ray)).filter((e) =>
                 e !== null
@@ -71,9 +66,8 @@ for (let i = 0; i < 360; i += 1) {
                 }
             }
             const idx = y * canvas.width + x;
-            imageData.data[4 * idx] = color;
-            imageData.data[4 * idx + 1] = color;
-            imageData.data[4 * idx + 2] = color;
+            imageData.data[4 * idx] = imageData.data[4 * idx + 1] = imageData
+                .data[4 * idx + 2] = color;
             imageData.data[4 * idx + 3] = 255;
         }
     }
@@ -85,13 +79,13 @@ const p = Deno.run({
     cmd: [
         "ffmpeg",
         "-framerate",
-        config.framerate,
+        "" + config.framerate,
         "-i",
         `${tmpDir}/img%d.png`,
         "-vcodec",
         "libx264",
         "-pix_fmt",
-        "yub420p",
+        "yuv420p",
         "out.mp4",
     ],
 });
