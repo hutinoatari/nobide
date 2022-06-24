@@ -57,6 +57,9 @@ class Vector3 {
         ).add(center);
         return tr;
     }
+    scale(center: Vector3, n: number) {
+        return this.add(center.sm(-1)).sm(n).add(center);
+    }
     size(): number {
         return (this.x ** 2 + this.y ** 2 + this.z ** 2) ** (1 / 2);
     }
@@ -146,6 +149,13 @@ class Triangle {
             this.p1.add(vec),
             this.p2.add(vec),
             this.p3.add(vec),
+        );
+    }
+    scale(center: Vector3, n: number) {
+        return new Triangle(
+            this.p1.scale(center, n),
+            this.p2.scale(center, n),
+            this.p3.scale(center, n),
         );
     }
 }
