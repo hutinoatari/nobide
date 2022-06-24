@@ -1,7 +1,11 @@
-import { scene1 } from "./scenes/scene1.ts";
+import { titleScene } from "./scenes/titleScene.ts";
+import { exerciseScene } from "./scenes/exerciseScene.ts";
 
 const timeline = (frame: number) => {
-    return scene1(frame);
+    if (frame < 60) {
+        return titleScene(frame);
+    }
+    return exerciseScene(frame - 60);
 };
 
 export { timeline };

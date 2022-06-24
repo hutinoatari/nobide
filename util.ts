@@ -158,8 +158,73 @@ class Triangle {
             this.p3.scale(center, n),
         );
     }
+    flat(): Triangle[] {
+        return [this];
+    }
 }
+
+class Polyhedron {
+    panels: (Triangle | Polyhedron)[];
+    constructor(panels: (Triangle | Polyhedron)[]) {
+        this.panels = [...panels];
+    }
+    rotateX(center: Vector3, rad: number): Polyhedron {
+        return new Polyhedron(this.panels.map((e) => e.rotateX(center, rad)));
+    }
+    rotateY(center: Vector3, rad: number): Polyhedron {
+        return new Polyhedron(this.panels.map((e) => e.rotateY(center, rad)));
+    }
+    rotateZ(center: Vector3, rad: number): Polyhedron {
+        return new Polyhedron(this.panels.map((e) => e.rotateZ(center, rad)));
+    }
+    translate(vec: Vector3): Polyhedron {
+        return new Polyhedron(this.panels.map((e) => e.translate(vec)));
+    }
+    scale(center: Vector3, n: number): Polyhedron {
+        return new Polyhedron(this.panels.map((e) => e.scale(center, n)));
+    }
+    flat(): Triangle[] {
+        const a = [];
+        for (const panel of this.panels) a.push(panel.flat());
+        return a.flat();
+    }
+}
+
+const render = (
+    canvas,
+    camera: Vector3,
+    panels: (Triangle | Polyhedron)[],
+): void => {
+    const context = canvas.getContext("2d");
+    const imageData = context.createImageData(320, 240);
+    for (let x = 0; x < 320; x += 1) {
+        for (let y = 0; y < 240; y += 1) {
+            const ray = new LineSegment(
+                camera,
+                new Vector3(
+                    camera.x + (x - camera.x) * 1.5,
+                    camera.y + (y - camera.y) * 1.5,
+                    320,
+                ),
+            );
+            const depths = panels.map((e) => e.flat()).flat().map((p) =>
+                p.collide(ray)?.z
+            ).filter((z) => z);
+            let z = 320;
+            for (const depth of depths) {
+                if (depth < 0 || 320 < depth) continue;
+                if (depth < z) z = depth;
+            }
+            const color = Math.round((z / 320) * 255);
+            const idx = y * canvas.width + x;
+            imageData.data[4 * idx] = imageData.data[4 * idx + 1] = imageData
+                .data[4 * idx + 2] = color;
+            imageData.data[4 * idx + 3] = 255;
+        }
+    }
+    context.putImageData(imageData, 0, 0);
+};
 
 const degToRad = (n) => Math.PI * n / 180;
 
-export { degToRad, LineSegment, Triangle, Vector3 };
+export { degToRad, LineSegment, Polyhedron, render, Triangle, Vector3 };
