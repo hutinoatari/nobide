@@ -30,7 +30,7 @@ class Vector3 {
             this.x * vec.y - this.y * vec.x,
         );
     }
-    rotateX(center: Vector3, rad: number) {
+    rotateX(center: Vector3, rad: number): Vector3 {
         const t = this.add(center.sm(-1));
         const tr = new Vector3(
             t.x,
@@ -39,7 +39,7 @@ class Vector3 {
         ).add(center);
         return tr;
     }
-    rotateY(center: Vector3, rad: number) {
+    rotateY(center: Vector3, rad: number): Vector3 {
         const t = this.add(center.sm(-1));
         const tr = new Vector3(
             t.x * Math.cos(rad) - t.z * Math.sin(rad),
@@ -48,7 +48,7 @@ class Vector3 {
         ).add(center);
         return tr;
     }
-    rotateZ(center: Vector3, rad: number) {
+    rotateZ(center: Vector3, rad: number): Vector3 {
         const t = this.add(center.sm(-1));
         const tr = new Vector3(
             t.x * Math.cos(rad) - t.y * Math.sin(rad),
@@ -57,7 +57,7 @@ class Vector3 {
         ).add(center);
         return tr;
     }
-    scale(center: Vector3, n: number) {
+    scale(center: Vector3, n: number): Vector3 {
         return this.add(center.sm(-1)).sm(n).add(center);
     }
     size(): number {
@@ -123,35 +123,35 @@ class Triangle {
         if (c1zd === c2zd && c1zd === c3zd) return c;
         return null;
     }
-    rotateX(center: Vector3, rad: number) {
+    rotateX(center: Vector3, rad: number): Triangle {
         return new Triangle(
             this.p1.rotateX(center, rad),
             this.p2.rotateX(center, rad),
             this.p3.rotateX(center, rad),
         );
     }
-    rotateY(center: Vector3, rad: number) {
+    rotateY(center: Vector3, rad: number): Triangle {
         return new Triangle(
             this.p1.rotateY(center, rad),
             this.p2.rotateY(center, rad),
             this.p3.rotateY(center, rad),
         );
     }
-    rotateZ(center: Vector3, rad: number) {
+    rotateZ(center: Vector3, rad: number): Triangle {
         return new Triangle(
             this.p1.rotateZ(center, rad),
             this.p2.rotateZ(center, rad),
             this.p3.rotateZ(center, rad),
         );
     }
-    translate(vec: Vector3) {
+    translate(vec: Vector3): Triangle {
         return new Triangle(
             this.p1.add(vec),
             this.p2.add(vec),
             this.p3.add(vec),
         );
     }
-    scale(center: Vector3, n: number) {
+    scale(center: Vector3, n: number): Triangle {
         return new Triangle(
             this.p1.scale(center, n),
             this.p2.scale(center, n),
