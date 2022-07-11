@@ -163,9 +163,47 @@ class Triangle {
     }
 }
 
+class Sphere {
+    p: Vector3;
+    r: number;
+    constructor(p: Vector3, r: number) {
+        this.p = p;
+        this.r = r;
+    }
+    collide(line: LineSegment): Vector3 | null {
+        const p = this.p.add(line.p1.sm(-1));
+        const a = line.v.dp(line.v);
+        const b = line.v.dp(p);
+        const c = p.dp(p) - this.r ** 2;
+        const t1 = b ** 2 - a * c;
+        if (t1 < 0) return null;
+        const t2 = (b + t1 ** 0.5) / a;
+        if (t2 < 0) return null;
+        return line.p1.add(line.v.sm(t2));
+    }
+    rotateX(center: Vector3, rad: number): Sphere {
+        return new Sphere(this.p.rotateX(center, rad), this.r);
+    }
+    rotateY(center: Vector3, rad: number): Sphere {
+        return new Sphere(this.p.rotateY(center, rad), this.r);
+    }
+    rotateZ(center: Vector3, rad: number): Sphere {
+        return new Sphere(this.p.rotateZ(center, rad), this.r);
+    }
+    translate(vec: Vector3): Sphere {
+        return new Sphere(this.p.add(vec), this.r);
+    }
+    scale(center: Vector3, n: number): Sphere {
+        return new Sphere(this.p.scale(center, n), this.r * n);
+    }
+    flat(): Sphere[] {
+        return [this];
+    }
+}
+
 class Polyhedron {
-    panels: (Triangle | Polyhedron)[];
-    constructor(panels: (Triangle | Polyhedron)[]) {
+    panels: (Triangle | Sphere | Polyhedron)[];
+    constructor(panels: (Triangle | Sphere | Polyhedron)[]) {
         this.panels = [...panels];
     }
     rotateX(center: Vector3, rad: number): Polyhedron {
@@ -193,7 +231,7 @@ class Polyhedron {
 const render = (
     canvas,
     camera: Vector3,
-    panels: (Triangle | Polyhedron)[],
+    panels: (Triangle | Sphere | Polyhedron)[],
 ): void => {
     const context = canvas.getContext("2d");
     const imageData = context.createImageData(320, 240);
@@ -227,4 +265,4 @@ const render = (
 
 const degToRad = (n) => Math.PI * n / 180;
 
-export { degToRad, LineSegment, Polyhedron, render, Triangle, Vector3 };
+export { degToRad, LineSegment, Polyhedron, render, Sphere, Triangle, Vector3 };

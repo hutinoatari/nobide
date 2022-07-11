@@ -3,6 +3,7 @@ import {
     LineSegment,
     Polyhedron,
     render,
+    Sphere,
     Triangle,
     Vector3,
 } from "../util.ts";
@@ -25,6 +26,10 @@ const thumb1 = () => {
             new Vector3(15, 0, 0),
             new Vector3(15, -40, 0),
             new Vector3(-15, 0, 0),
+        ),
+        new Sphere(
+            new Vector3(0, -40, 0),
+            15,
         ),
     ]);
     return bone;
@@ -70,6 +75,10 @@ const firstFinger1 = () => {
             new Vector3(15, 0, 0),
             new Vector3(15, -37, 0),
             new Vector3(-15, 0, 0),
+        ),
+        new Sphere(
+            new Vector3(0, -37, 0),
+            15,
         ),
     ]);
     return bone;
@@ -122,6 +131,10 @@ const secondFinger1 = () => {
             new Vector3(15, -40, 0),
             new Vector3(-15, 0, 0),
         ),
+        new Sphere(
+            new Vector3(0, -40, 0),
+            15,
+        ),
     ]);
     return bone;
 };
@@ -173,6 +186,10 @@ const thirdFinger1 = () => {
             new Vector3(15, -37, 0),
             new Vector3(-15, 0, 0),
         ),
+        new Sphere(
+            new Vector3(0, -37, 0),
+            15,
+        ),
     ]);
     return bone;
 };
@@ -223,6 +240,10 @@ const forthFinger1 = () => {
             new Vector3(15, 0, 0),
             new Vector3(15, -30, 0),
             new Vector3(-15, 0, 0),
+        ),
+        new Sphere(
+            new Vector3(0, -30, 0),
+            15,
         ),
     ]);
     return bone;
