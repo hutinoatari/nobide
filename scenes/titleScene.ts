@@ -8,7 +8,7 @@ const titleScene = (frame: number) => {
     context.fillRect(0, 0, 320, 240);
     context.fillStyle = "black";
     context.font = "30px monospace";
-    context.fillText("hand-exercise", 160 - 15 * 7.5, 30 + 120 - 15);
+    context.fillText("demo movie", 160 - 15 * 6, 30 + 120 - 15);
     return canvas;
 };
 

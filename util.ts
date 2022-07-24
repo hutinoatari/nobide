@@ -177,7 +177,7 @@ class Sphere {
         const c = p.dp(p) - this.r ** 2;
         const t1 = b ** 2 - a * c;
         if (t1 < 0) return null;
-        const t2 = (b + t1 ** 0.5) / a;
+        const t2 = (b - t1 ** 0.5) / a;
         if (t2 < 0) return null;
         return line.p1.add(line.v.sm(t2));
     }
@@ -228,6 +228,74 @@ class Polyhedron {
     }
 }
 
+const cube = (point: Vector3, size: Vector3): Polyhedron => {
+    return new Polyhedron([
+        // z固定
+        new Triangle(
+            new Vector3(0, 0, 0),
+            new Vector3(size.x, 0, 0),
+            new Vector3(size.x, size.y, 0),
+        ),
+        new Triangle(
+            new Vector3(0, 0, 0),
+            new Vector3(0, size.y, 0),
+            new Vector3(size.x, size.y, 0),
+        ),
+        new Triangle(
+            new Vector3(0, 0, size.z),
+            new Vector3(size.x, 0, size.z),
+            new Vector3(size.x, size.y, size.z),
+        ),
+        new Triangle(
+            new Vector3(0, 0, size.z),
+            new Vector3(0, size.y, size.z),
+            new Vector3(size.x, size.y, size.z),
+        ),
+        // x固定
+        new Triangle(
+            new Vector3(0, 0, 0),
+            new Vector3(0, size.y, 0),
+            new Vector3(0, size.y, size.z),
+        ),
+        new Triangle(
+            new Vector3(0, 0, 0),
+            new Vector3(0, 0, size.z),
+            new Vector3(0, size.y, size.z),
+        ),
+        new Triangle(
+            new Vector3(size.x, 0, 0),
+            new Vector3(size.x, size.y, 0),
+            new Vector3(size.x, size.y, size.z),
+        ),
+        new Triangle(
+            new Vector3(size.x, 0, 0),
+            new Vector3(size.x, 0, size.z),
+            new Vector3(size.x, size.y, size.z),
+        ),
+        // y固定
+        new Triangle(
+            new Vector3(0, 0, 0),
+            new Vector3(0, 0, size.z),
+            new Vector3(size.x, 0, size.z),
+        ),
+        new Triangle(
+            new Vector3(0, 0, 0),
+            new Vector3(size.x, 0, 0),
+            new Vector3(size.x, 0, size.z),
+        ),
+        new Triangle(
+            new Vector3(0, size.y, 0),
+            new Vector3(0, size.y, size.z),
+            new Vector3(size.x, size.y, size.z),
+        ),
+        new Triangle(
+            new Vector3(0, size.y, 0),
+            new Vector3(size.x, size.y, 0),
+            new Vector3(size.x, size.y, size.z),
+        ),
+    ]).translate(point);
+};
+
 const render = (
     canvas,
     camera: Vector3,
@@ -265,4 +333,13 @@ const render = (
 
 const degToRad = (n) => Math.PI * n / 180;
 
-export { degToRad, LineSegment, Polyhedron, render, Sphere, Triangle, Vector3 };
+export {
+    cube,
+    degToRad,
+    LineSegment,
+    Polyhedron,
+    render,
+    Sphere,
+    Triangle,
+    Vector3,
+};

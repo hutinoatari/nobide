@@ -5,7 +5,7 @@ const framerate = 30;
 
 const tmpDir = "./tmp";
 await emptyDir(tmpDir);
-for (let i = 0; i < 300; i += 1) {
+for (let i = 0; i < 100; i += 1) {
     const canvas = timeline(i);
     await Deno.writeFile(`${tmpDir}/img${i}.png`, canvas.toBuffer());
     console.log(`img${i}.png`);
